@@ -2,10 +2,12 @@
   "name": "vscode-agent-md-parser",
   "version": "1.0.0",
   "description": "TypeScript utility to parse VS Code Custom Agent .agent.md files into typed config",
-  "main": "dist/parseAgentMd.js",
-  "types": "dist/parseAgentMd.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
+    "test": "npm run typecheck && tsx --test test/*.test.ts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -23,6 +25,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.0.0"
   },
   "files": [

@@ -88,6 +88,44 @@ Body 會變成 `instructions`。
 
 同時相容 Claude 格式（`tools` 寫成逗號字串會自動轉成陣列）。
 
+## 產生各 harness 的 agent 檔案
+
+`generateAgentFile` 會把一份 VS Code custom agent（原始 `.agent.md` 字串，或已經由
+`parseAgentMd` 解析出的 `AgentConfig`）轉成指定 harness 的對應檔案。
+
+| harness   | 輸出路徑                      | 格式 |
+|-----------|-------------------------------|------|
+| `copilot` | `<name>.agent.md`             | kebab-case YAML frontmatter + Markdown body |
+| `claude`  | `.claude/agents/<name>.md`    | `tools` 為逗號字串、`model` 只取單一值 |
+| `codex`   | `AGENTS.md`                   | 純 Markdown，沒有 frontmatter |
+
+```ts
+import { generateAgentFile, generateAllAgentFiles } from 'vscode-agent-md-parser';
+
+const file = generateAgentFile(mdContent, {
+  harness: 'claude',
+  filename: 'planner.agent.md',
+});
+
+console.log(file.path);    // '.claude/agents/planner.md'
+console.log(file.content); // 完整檔案內容
+
+// 一次產出三種 harness
+for (const f of generateAllAgentFiles(mdContent, { filename: 'planner.agent.md' })) {
+  console.log(f.harness, f.path);
+}
+```
+
+名稱會被轉成 kebab-case slug 當檔名；若 frontmatter 沒有 `name`，則從 `filename` 推導。
+
+## 開發 / Development
+
+```bash
+npm install
+npm test    # typecheck + node:test
+npm run build
+```
+
 ## License
 
 MIT
